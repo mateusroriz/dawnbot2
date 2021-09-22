@@ -34,6 +34,9 @@ client.on("message", async message => {
   } else if (message.content.startsWith(`${prefix}quit`)) {
     stop(message, serverQueue);
     return;
+  } else if (message.content.startsWith(`${prefix}drip`)) {
+   execute(message, serverQueue);
+    return;
   } else {
     message.channel.send("You need to enter a valid command!");
   }
@@ -53,18 +56,24 @@ async function execute(message, serverQueue) {
       "I need the permissions to join and speak in your voice channel!"
     );
   }
+    var song ={}
 
+  if(args[0] == "-drip"){
+    const dripInfo = await ytdl.getInfo('https://www.youtube.com/watch?v=DU_Tt040lvk');
+     song = {
+      title: dripInfo.videoDetails.title,
+      url: dripInfo.videoDetails.video_url,
+      };
+  }else{
+    const songInfo = await ytdl.getInfo(args[1]);
 
- // var repl = args[1].replace(/\s/g, '');
-
+     song = {
+          title: songInfo.videoDetails.title,
+          url: songInfo.videoDetails.video_url,
+     };
+     
+  }
   
-  const songInfo = await ytdl.getInfo(args[1]);
-
-  const song = {
-        title: songInfo.videoDetails.title,
-        url: songInfo.videoDetails.video_url,
-   };
-
   if (!serverQueue) {
     const queueContruct = {
       textChannel: message.channel,
